@@ -1,6 +1,7 @@
 package asteroids.main;
 
 import asteroids.resources.Ship;
+import asteroids.resources.Asteroid;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,12 +26,21 @@ public class AsteroidsApplication extends Application {
 		Pane pane = new Pane();
 		pane.setPrefSize(600, 400);
 		
-		Ship ship = new Ship(300,200);
+		Ship ship = new Ship(150,50);
+		Asteroid asteroid = new Asteroid(50, 50);
 
 	
 		
 
 		pane.getChildren().add(ship.getCharacter());
+		pane.getChildren().add(asteroid.getCharacter());
+		
+		asteroid.turnRight();
+		asteroid.turnRight();
+		asteroid.accelerate();
+		asteroid.accelerate();
+		
+		
 		Scene scene = new Scene(pane);
 
 		scene.setOnKeyPressed((event) -> {
@@ -64,7 +74,7 @@ public class AsteroidsApplication extends Application {
 				}
 				
 				ship.move();
-				
+				asteroid.move();
 			}
 		}.start();
 

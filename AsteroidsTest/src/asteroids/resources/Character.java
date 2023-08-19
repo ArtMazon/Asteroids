@@ -8,8 +8,8 @@ public abstract class Character {
 	private Polygon character;
 	private Point2D movement;
 
-	public Character(int x, int y) {
-		this.character = new Polygon(-5, -5, 10, 0, -5, 5);
+	public Character(Polygon polygon, int x, int y) {
+		this.character = polygon;
 		this.character.setTranslateX(x);
 		this.character.setTranslateY(y);
 
