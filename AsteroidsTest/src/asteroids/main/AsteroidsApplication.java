@@ -1,5 +1,7 @@
 package asteroids.main;
 
+import asteroids.resources.Ship;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,15 +24,13 @@ public class AsteroidsApplication extends Application {
 
 		Pane pane = new Pane();
 		pane.setPrefSize(600, 400);
-
-		Polygon ship = new Polygon(-5, -5, 10, 0, -5, 5);
-		ship.setTranslateX(300);
-		ship.setTranslateY(200);
-		ship.setRotate(30);
 		
-		Point2D movement = new Point2D(1,0);
+		Ship ship = new Ship(300,200);
 
-		pane.getChildren().add(ship);
+	
+		
+
+		pane.getChildren().add(ship.getCharacter());
 		Scene scene = new Scene(pane);
 
 		scene.setOnKeyPressed((event) -> {
@@ -48,14 +48,22 @@ public class AsteroidsApplication extends Application {
 			@Override
 			public void handle(long now) {
 				if(pressedKeys.getOrDefault(KeyCode.LEFT, false)) {
-					ship.setRotate(ship.getRotate()-5);
+					ship.turnLeft();
 				}
 				
 				if(pressedKeys.getOrDefault(KeyCode.RIGHT, false)) {
-					ship.setRotate(ship.getRotate()+5);
+					ship.turnRight();
 				}
 				
-				ship.setTranslateX(ship.getTranslateX()+movement.getX());
+				if(pressedKeys.getOrDefault(KeyCode.UP, false)) {
+					ship.accelerate();
+				}
+				
+				if(pressedKeys.getOrDefault(KeyCode.DOWN, false)) {
+					ship.shipBreak();
+				}
+				
+				ship.move();
 				
 			}
 		}.start();
