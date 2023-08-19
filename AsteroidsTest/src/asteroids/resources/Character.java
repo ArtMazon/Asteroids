@@ -2,6 +2,7 @@ package asteroids.resources;
 
 import javafx.geometry.Point2D;
 import javafx.scene.shape.Polygon;
+import javafx.scene.shape.Shape;
 
 public abstract class Character {
 	
@@ -51,6 +52,16 @@ public abstract class Character {
 		
 		
 		this.movement = this.movement.add(new Point2D(changeX,changeY));
+		
+	}
+	
+
+	public boolean collide (Character other) {
+		
+		Shape collisionArea = Shape.intersect(this.character, other.getCharacter());
+		
+		return collisionArea.getBoundsInLocal().getWidth() != -1;
+		
 		
 	}
 
