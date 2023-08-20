@@ -35,9 +35,9 @@ public class AsteroidsApplication extends Application {
 
 		Pane pane = new Pane();
 		pane.setPrefSize(WIDTH, HEIGHT);
-		
-		Text score = new Text(10,20,"Points: 0");
-		
+
+		Text score = new Text(10, 20, "Points: 0");
+
 		AtomicInteger points = new AtomicInteger();
 
 		Ship ship = new Ship(WIDTH / 2, HEIGHT / 2);
@@ -128,26 +128,30 @@ public class AsteroidsApplication extends Application {
 								projectile.setAlive(false);
 								asteroido.setAlive(false);
 							}
-							
-					
 
 						});
-						
-						if(!projectile.isAlive()) {
-							score.setText("Points: "+ points.addAndGet(1000));
+
+						if (!projectile.isAlive()) {
+							score.setText("Points: " + points.addAndGet(1000));
 						}
-						
 
 					});
+
+					removeCharacter(projectiles, pane);
+					removeCharacter(asteroids, pane);
 					
-					
-					removeCharacter(projectiles,pane);
-					removeCharacter(asteroids,pane);
-										
+					if(Math.random() < 0.005 && asteroids.size()<10) {
+					    Asteroid asteroidis = new Asteroid(WIDTH, HEIGHT);
+					    if(!asteroidis.collide(ship)) {
+					        asteroids.add(asteroidis);
+					        pane.getChildren().add(asteroidis.getCharacter());
+					    }
+					}
 
 				});
 
 			}
+
 		}.start();
 
 		window.setScene(scene);
@@ -155,17 +159,14 @@ public class AsteroidsApplication extends Application {
 
 		window.show();
 	}
-	
-	
+
 	public void removeCharacter(List<? extends Character> characterList, Pane pane) {
-		
-		characterList.stream()
-		.filter(character -> !character.isAlive())
-		.forEach(character -> pane.getChildren().remove(character.getCharacter()));
-		
-		characterList.removeAll(characterList.stream()
-		.filter(character-> !character.isAlive())
-		.collect(Collectors.toList()));
+
+		characterList.stream().filter(character -> !character.isAlive())
+				.forEach(character -> pane.getChildren().remove(character.getCharacter()));
+
+		characterList.removeAll(
+				characterList.stream().filter(character -> !character.isAlive()).collect(Collectors.toList()));
 	}
 
 	public static void main(String[] args) {
