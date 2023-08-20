@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.stream.Collectors;
 import java.util.ArrayList;
 
 import javafx.animation.AnimationTimer;
@@ -22,28 +23,26 @@ import javafx.scene.shape.Polygon;
 
 public class AsteroidsApplication extends Application {
 	public static int WIDTH = 300;
-    public static int HEIGHT = 200;
+	public static int HEIGHT = 200;
 
 	@Override
 	public void start(Stage window) {
 
 		Map<KeyCode, Boolean> pressedKeys = new HashMap<>();
-		
-	    
 
 		Pane pane = new Pane();
 		pane.setPrefSize(WIDTH, HEIGHT);
 
-		Ship ship = new Ship(WIDTH/2, HEIGHT/2);
+		Ship ship = new Ship(WIDTH / 2, HEIGHT / 2);
 
 		List<Asteroid> asteroids = new ArrayList<>();
-		
+
 		List<Projectile> projectiles = new ArrayList<>();
 
 		for (int i = 0; i < 5; i++) {
 			Random rdm = new Random();
 
-			Asteroid asteroid = new Asteroid(rdm.nextInt(WIDTH/3), rdm.nextInt(HEIGHT/3));
+			Asteroid asteroid = new Asteroid(rdm.nextInt(WIDTH / 3), rdm.nextInt(HEIGHT / 3));
 
 			asteroids.add(asteroid);
 
@@ -88,22 +87,23 @@ public class AsteroidsApplication extends Application {
 				if (pressedKeys.getOrDefault(KeyCode.DOWN, false)) {
 					ship.shipBreak();
 				}
-				
-				if(pressedKeys.getOrDefault(KeyCode.SPACE, false)) {
-					Projectile projectile = new Projectile ((int)ship.getCharacter().getTranslateX(), (int) ship.getCharacter().getTranslateY());
+
+				if (pressedKeys.getOrDefault(KeyCode.SPACE, false) && projectiles.size() < 3) {
+					Projectile projectile = new Projectile((int) ship.getCharacter().getTranslateX(),
+							(int) ship.getCharacter().getTranslateY());
 					projectile.getCharacter().setRotate(ship.getCharacter().getRotate());
-					
+
 					projectiles.add(projectile);
-					
+
 					projectile.accelerate();
 					projectile.setMovement(projectile.getMovement().normalize().multiply(3));
-					
+
 					pane.getChildren().add(projectile.getCharacter());
-					
+
 				}
 
 				ship.move();
-				
+
 				projectiles.forEach(projectile -> projectile.move());
 
 				asteroids.forEach(asteroid -> asteroid.move());
@@ -112,6 +112,47 @@ public class AsteroidsApplication extends Application {
 					if (ship.collide(asteroid)) {
 						stop();
 					}
+
+//					projectiles.forEach(projectile -> {
+//
+//						List<Asteroid> collisions = asteroids.stream()
+//								.filter(collision -> collision.collide(projectile)).collect(Collectors.toList());
+//
+//						collisions.stream().forEach(collided -> {
+//
+//							asteroids.remove(collided);
+//							pane.getChildren().remove(collided.getCharacter());
+//
+//						});
+//
+//					});
+//					
+
+					List<Projectile> projectilesToRemove = projectiles.stream().filter(projectile -> {
+
+						List<Asteroid> collisions = asteroids.stream()
+								.filter(asteroidi -> asteroidi.collide(projectile)).collect(Collectors.toList());
+
+						if (collisions.isEmpty()) {
+							return false;
+						}
+
+						collisions.stream().forEach(collided -> {
+							asteroids.remove(collided);
+							pane.getChildren().remove(collided.getCharacter());
+
+						});
+
+						return true;
+
+					}).collect(Collectors.toList());
+					
+					
+					projectilesToRemove.stream().forEach(projectileremove ->{
+						pane.getChildren().remove(projectileremove.getCharacter());
+						projectiles.remove(projectileremove);
+					});
+					
 
 				});
 
