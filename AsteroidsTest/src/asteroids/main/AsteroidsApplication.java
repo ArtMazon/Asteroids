@@ -3,11 +3,13 @@ package asteroids.main;
 import asteroids.resources.Ship;
 import asteroids.resources.Asteroid;
 import asteroids.resources.Projectile;
+import asteroids.resources.Character;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.ArrayList;
 
@@ -20,6 +22,7 @@ import javafx.scene.layout.Pane;
 import javafx.geometry.Point2D;
 import javafx.stage.Stage;
 import javafx.scene.shape.Polygon;
+import javafx.scene.text.Text;
 
 public class AsteroidsApplication extends Application {
 	public static int WIDTH = 300;
@@ -32,6 +35,10 @@ public class AsteroidsApplication extends Application {
 
 		Pane pane = new Pane();
 		pane.setPrefSize(WIDTH, HEIGHT);
+		
+		Text score = new Text(10,20,"Points: 0");
+		
+		AtomicInteger points = new AtomicInteger();
 
 		Ship ship = new Ship(WIDTH / 2, HEIGHT / 2);
 
@@ -50,6 +57,7 @@ public class AsteroidsApplication extends Application {
 
 		//
 		pane.getChildren().add(ship.getCharacter());
+		pane.getChildren().add(score);
 
 		asteroids.forEach(asteroid -> pane.getChildren().add(asteroid.getCharacter()));
 
@@ -113,46 +121,29 @@ public class AsteroidsApplication extends Application {
 						stop();
 					}
 
-//					projectiles.forEach(projectile -> {
-//
-//						List<Asteroid> collisions = asteroids.stream()
-//								.filter(collision -> collision.collide(projectile)).collect(Collectors.toList());
-//
-//						collisions.stream().forEach(collided -> {
-//
-//							asteroids.remove(collided);
-//							pane.getChildren().remove(collided.getCharacter());
-//
-//						});
-//
-//					});
-//					
+					projectiles.forEach(projectile -> {
 
-					List<Projectile> projectilesToRemove = projectiles.stream().filter(projectile -> {
-
-						List<Asteroid> collisions = asteroids.stream()
-								.filter(asteroidi -> asteroidi.collide(projectile)).collect(Collectors.toList());
-
-						if (collisions.isEmpty()) {
-							return false;
-						}
-
-						collisions.stream().forEach(collided -> {
-							asteroids.remove(collided);
-							pane.getChildren().remove(collided.getCharacter());
+						asteroids.forEach(asteroido -> {
+							if (projectile.collide(asteroido)) {
+								projectile.setAlive(false);
+								asteroido.setAlive(false);
+							}
+							
+					
 
 						});
+						
+						if(!projectile.isAlive()) {
+							score.setText("Points: "+ points.addAndGet(1000));
+						}
+						
 
-						return true;
-
-					}).collect(Collectors.toList());
-					
-					
-					projectilesToRemove.stream().forEach(projectileremove ->{
-						pane.getChildren().remove(projectileremove.getCharacter());
-						projectiles.remove(projectileremove);
 					});
 					
+					
+					removeCharacter(projectiles,pane);
+					removeCharacter(asteroids,pane);
+										
 
 				});
 
@@ -163,6 +154,18 @@ public class AsteroidsApplication extends Application {
 		window.setTitle("Asteroids");
 
 		window.show();
+	}
+	
+	
+	public void removeCharacter(List<? extends Character> characterList, Pane pane) {
+		
+		characterList.stream()
+		.filter(character -> !character.isAlive())
+		.forEach(character -> pane.getChildren().remove(character.getCharacter()));
+		
+		characterList.removeAll(characterList.stream()
+		.filter(character-> !character.isAlive())
+		.collect(Collectors.toList()));
 	}
 
 	public static void main(String[] args) {
