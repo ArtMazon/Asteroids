@@ -20,23 +20,27 @@ import javafx.stage.Stage;
 import javafx.scene.shape.Polygon;
 
 public class AsteroidsApplication extends Application {
+	public static int WIDTH = 300;
+    public static int HEIGHT = 200;
 
 	@Override
 	public void start(Stage window) {
 
 		Map<KeyCode, Boolean> pressedKeys = new HashMap<>();
+		
+	    
 
 		Pane pane = new Pane();
-		pane.setPrefSize(600, 400);
+		pane.setPrefSize(WIDTH, HEIGHT);
 
-		Ship ship = new Ship(150, 50);
+		Ship ship = new Ship(WIDTH/2, HEIGHT/2);
 
 		List<Asteroid> asteroids = new ArrayList<>();
 
 		for (int i = 0; i < 5; i++) {
 			Random rdm = new Random();
 
-			Asteroid asteroid = new Asteroid(rdm.nextInt(100), rdm.nextInt(100));
+			Asteroid asteroid = new Asteroid(rdm.nextInt(WIDTH/3), rdm.nextInt(HEIGHT/3));
 
 			asteroids.add(asteroid);
 
