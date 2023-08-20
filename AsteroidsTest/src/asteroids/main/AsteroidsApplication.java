@@ -2,6 +2,7 @@ package asteroids.main;
 
 import asteroids.resources.Ship;
 import asteroids.resources.Asteroid;
+import asteroids.resources.Projectile;
 
 import java.util.HashMap;
 import java.util.List;
@@ -36,6 +37,8 @@ public class AsteroidsApplication extends Application {
 		Ship ship = new Ship(WIDTH/2, HEIGHT/2);
 
 		List<Asteroid> asteroids = new ArrayList<>();
+		
+		List<Projectile> projectiles = new ArrayList<>();
 
 		for (int i = 0; i < 5; i++) {
 			Random rdm = new Random();
@@ -85,8 +88,23 @@ public class AsteroidsApplication extends Application {
 				if (pressedKeys.getOrDefault(KeyCode.DOWN, false)) {
 					ship.shipBreak();
 				}
+				
+				if(pressedKeys.getOrDefault(KeyCode.SPACE, false)) {
+					Projectile projectile = new Projectile ((int)ship.getCharacter().getTranslateX(), (int) ship.getCharacter().getTranslateY());
+					projectile.getCharacter().setRotate(ship.getCharacter().getRotate());
+					
+					projectiles.add(projectile);
+					
+					projectile.accelerate();
+					projectile.setMovement(projectile.getMovement().normalize().multiply(3));
+					
+					pane.getChildren().add(projectile.getCharacter());
+					
+				}
 
 				ship.move();
+				
+				projectiles.forEach(projectile -> projectile.move());
 
 				asteroids.forEach(asteroid -> asteroid.move());
 

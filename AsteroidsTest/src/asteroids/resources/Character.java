@@ -22,6 +22,11 @@ public abstract class Character {
 	public void setMovement(Point2D movement) {
 		this.movement = movement;
 	}
+	
+	public Point2D getMovement() {
+		
+		return this.movement;
+	}
 
 	public Polygon getCharacter() {
 
