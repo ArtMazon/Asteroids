@@ -13,7 +13,7 @@ public class PolygonFactory {
 		double size = 10 + rnd.nextInt(10);
 
 		double c1 = Math.cos(2 * Math.PI / 5);
-		double c2 = Math.cos(4 * Math.PI / 5);
+		double c2 = Math.cos(Math.PI / 5);
 		double s1 = Math.sin(2 * Math.PI / 5);
 		double s2 = Math.sin(4 * Math.PI / 5);
 
